@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const routes = require('./routes.js');
+const models = require('./models.js');
 const bodyParse = require('body-parser');
 const app = express();
 
@@ -17,7 +18,7 @@ MongoClient.connect(url, function(err, db) {
     } else {
         console.log("We connected to the mongo server!");
     }
-    routes(app, db);
+    routes(app, db, models(db));
 });
 
 app.use('/public', express.static(path.join(__dirname, 'public')));

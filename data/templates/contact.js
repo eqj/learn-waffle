@@ -2,45 +2,61 @@ var escape = require('escape-html');
 
 const functionThatConvertsAMessageIntoHtml = (post) => {
     return `
-    <p>Name: ${escape(post['name'])}<br>
-    Message: ${escape(post['message'])}</p>
+    <p>
+    ${escape(post['message'])}<br>
+    -- <i>${escape(post['name'])}, ${escape(post['createdAt'])}</i>
+    </p>
     `;
 };
 
-module.exports = (posts, visitCounter) => {
+const functionThatConvertsAlertIntoHtml = (alert) => {
+    return `
+    <script>
+    alert("${alert}");
+    </script>
+    `
+}
+
+module.exports = (posts, visits, alerts) => {
+    if(alerts == null) {
+        alerts = [];
+    }
+
     return `<!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <title>Guestbook Like It's The 90s</title>
-    <link rel="stylesheet" type="text/css" href="public/style.css"> 
+    <title>Leave a message</title>
+    <link rel="stylesheet" type="text/css" href="public/style.css">
+    ${ alerts.map(x => functionThatConvertsAlertIntoHtml(x)).join("") }
+        
 </head>
 <body>
-   <h1>Leave a message!</h1>
-   <form id="contact_form" action="#" method="POST" enctype="application/x-www-form-urlencoded">
-	<div class="row">
-		<label for="name">Your name:</label><br />
-		<input id="name" class="input" name="name" type="text" value="" size="30" /><br />
-	</div>
-	<div class="row">
-		<label for="email">Your email:</label><br />
-		<input id="email" class="input" name="email" type="text" value="" size="30" /><br />
-	</div>
-	<div class="row">
-		<label for="message">Your message:</label><br />
-		<textarea id="message" class="input" name="message" rows="7" cols="30"></textarea><br />
-	</div>
-	<input id="submit_button" type="submit" value="Post message" />
-    </form>
-    
-    <h1>See who piddled on the kitchen floor:</h1>
-    ${ posts.map(x => functionThatConvertsAMessageIntoHtml(x)).join("\n") }
-    
-    <img src="public/under-construct.gif">
-    
-    <h2>Visits: ${visitCounter}</h2>
-    
+    <div id="main">
+       <h1>Guestbook like it's 1999</h1>
+       <form id="contact_form" action="#" method="POST" enctype="application/x-www-form-urlencoded">
+        <div class="row">
+            <label for="name">Your name:</label><br />
+            <input id="name" class="input" name="name" type="text" value="" size="30" /><br />
+        </div>
+        <div class="row">
+            <label for="email">Your email:</label><br />
+            <input id="email" class="input" name="email" type="text" value="" size="30" /><br />
+        </div>
+        <div class="row">
+            <label for="message">Your message:</label><br />
+            <textarea id="message" class="input" name="message" rows="7" cols="30"></textarea><br />
+        </div>
+        <input id="submit_button" type="submit" value="Post message" />
+        </form>
+        
+        <img id="header" src="public/kilroy.jpg">
+        <div id="content">
+            ${ posts.map(x => functionThatConvertsAMessageIntoHtml(x)).join("") }
+        </div>
+        <div id="footer">
+            <h2>Visitors: ${visits}</h2>
+        </div>
+    </div>
 </body>
 </html>
 `;

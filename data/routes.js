@@ -1,52 +1,88 @@
 const contact = require('./templates/contact.js');
-const thankyou = require('./templates/thankyou.js');
 
-module.exports = ( app, db ) => {
+module.exports = ( app, db, models ) => {
 
     app.get('/', (req, res) => {
-        var collection = db.collection('messages');
-        collection.find({}).limit(10).sort([['createdAt', -1]]).toArray((err, results) => {
+        models.heyAshWhatchaSayin((err, posts) => {
             if(err != null){
                 console.error(err);
             }
             else{
-                var counter = db.collection('visitcounter');
-                counter.insertOne({}, (err, result) => {
-                   if(err != null){
-                       console.error(err);
-                   }
-                   counter.count({}, (err, visits) => {
-                       if(err != null){
-                           console.error(err);
-                       }
-                       else{
-                           console.log(`Visitor total: ${visits}`);
-                           res.send(contact(results, visits));
-                       }
-                   })
+                models.howManyVisitorsHaveWeHad(true, (err, visits) => {
+                    if(err != null) {
+                        console.error(err);
+                    }
+                    else {
+                        res.send(contact(posts, visits));
+                    }
                 });
             }
         });
     });
 
     app.post('/', (req, res) => {
-        // Get the documents collection
-        var collection = db.collection('messages');
-        // Insert some documents
         var thisPost = {
             'name': req.body['name'],
             'email': req.body['email'],
             'message': req.body['message'],
             'createdAt': new Date()
         };
-        collection.insertOne(thisPost, (err, result) => {
-            if(err != null){
-                console.error(err);
+
+        const validatePost = (post) => {
+            console.log(post);
+            var alerts = [];
+            if(post.name == null || post.name === ''){
+                alerts.push('Name is required, Bob');
             }
-            else{
-                console.log(`Inserted a message into the collection from ${req.body['email']}`);
+
+            // Holy shit this regex, thank you internet?
+            var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if(!emailRegex.test(post.email)){
+                alerts.push('That was not an email, Bob!');
             }
-        });
-        res.redirect('/');
+
+            if(post.message == null || post.message === ''){
+                alerts.push('Bob you have to actually fill in a message, jeez');
+            }
+
+            return alerts;
+        };
+
+        var alerts = validatePost(thisPost);
+
+        var collection = db.collection('messages');
+        if(alerts.length > 0) {
+            models.heyAshWhatchaSayin((err, posts) => {
+                if(err != null) {
+                    console.error(err);
+                }
+                else {
+                    console.log(`Inserted a message into the collection from ${req.body['email']}`);
+                    models.howManyVisitorsHaveWeHad(false, (err, visits) => {
+                        res.send(contact(posts, visits, alerts));
+                    });
+                }
+            });
+        }
+        else {
+            collection.insertOne(thisPost, (err, result) => {
+                if(err != null){
+                    console.error(err);
+                }
+                else{
+                    models.heyAshWhatchaSayin((err, posts) => {
+                        if(err != null) {
+                            console.error(err);
+                        }
+                        else {
+                            console.log(`Inserted a message into the collection from ${req.body['email']}`);
+                            models.howManyVisitorsHaveWeHad(false, (err, visits) => {
+                                res.send(contact(posts, visits, alerts));
+                            });
+                        }
+                    });
+                }
+            });
+        }
     });
 };
