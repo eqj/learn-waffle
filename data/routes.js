@@ -5,7 +5,7 @@ module.exports = ( app, db ) => {
 
     app.get('/', (req, res) => {
         var collection = db.collection('messages');
-        collection.find({}).limit(10).toArray((err, results) => {
+        collection.find({}).limit(10).sort([['createdAt', -1]]).toArray((err, results) => {
             if(err != null){
                 console.error(err);
             }
@@ -20,7 +20,7 @@ module.exports = ( app, db ) => {
                            console.error(err);
                        }
                        else{
-                           console.log(visits);
+                           console.log(`Visitor total: ${visits}`);
                            res.send(contact(results, visits));
                        }
                    })
@@ -33,14 +33,20 @@ module.exports = ( app, db ) => {
         // Get the documents collection
         var collection = db.collection('messages');
         // Insert some documents
-        collection.insertOne(req.body, (err, result) => {
+        var thisPost = {
+            'name': req.body['name'],
+            'email': req.body['email'],
+            'message': req.body['message'],
+            'createdAt': new Date()
+        };
+        collection.insertOne(thisPost, (err, result) => {
             if(err != null){
                 console.error(err);
             }
             else{
-                console.log("Inserted a message into the collection");
+                console.log(`Inserted a message into the collection from ${req.body['email']}`);
             }
         });
-        res.send(thankyou(req.body.name));
+        res.redirect('/');
     });
 };

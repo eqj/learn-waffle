@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.17.2",
+    "escape-html": "^1.0.3",
     "express": "^4.15.4",
     "handlebars": "^4.0.10",
     "mongodb": "^2.2.31"

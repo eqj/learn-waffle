@@ -1,7 +1,9 @@
+var escape = require('escape-html');
+
 const functionThatConvertsAMessageIntoHtml = (post) => {
     return `
-    <p>Name: ${post['name']}<br>
-    Message: ${post['message']}</p>
+    <p>Name: ${escape(post['name'])}<br>
+    Message: ${escape(post['message'])}</p>
     `;
 };
 
@@ -29,7 +31,7 @@ module.exports = (posts, visitCounter) => {
 		<label for="message">Your message:</label><br />
 		<textarea id="message" class="input" name="message" rows="7" cols="30"></textarea><br />
 	</div>
-	<input id="submit_button" type="submit" value="Send email" />
+	<input id="submit_button" type="submit" value="Post message" />
     </form>
     
     <h1>See who piddled on the kitchen floor:</h1>
