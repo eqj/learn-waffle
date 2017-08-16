@@ -56,16 +56,6 @@ div#footer {
     padding-bottom: 0.1em;
 }
 
-div#contact-info {
-    width: 500px;
-    margin: 0 auto;
-    padding: 1em;
-}
-div#email-headers {
-    text-align: right;
-    margin-bottom: 1em;
-}
-
 /* Forms */
 form#contact_form {
     background-color: #edecf9;

@@ -1,17 +1,16 @@
 const express = require('express');
 const path = require('path');
-const routes = require('./routes.js');
-const models = require('./models.js');
 const bodyParse = require('body-parser');
 const app = express();
+const mongoClient = require('mongodb').MongoClient;
+const routes = require('./routes.js');
+const models = require('./models.js');
 
-var MongoClient = require('mongodb').MongoClient;
-
-// Connection URL
+// Connection URL, very hard coded, much bad
 var url = 'mongodb://boop:LearnBoops@localhost:27017/learnboops?authSource=admin';
 
 // Connect to the server
-MongoClient.connect(url, function(err, db) {
+mongoClient.connect(url, function(err, db) {
     if(err != null) {
         console.error(err);
         process.exit(42);

@@ -1,7 +1,8 @@
-const contact = require('./templates/contact.js');
+const guestbook = require('./templates/guestbook.js');
 
 module.exports = ( app, db, models ) => {
 
+    // Load the guestbook page
     app.get('/', (req, res) => {
         models.heyAshWhatchaSayin((err, posts) => {
             if(err != null){
@@ -13,13 +14,14 @@ module.exports = ( app, db, models ) => {
                         console.error(err);
                     }
                     else {
-                        res.send(contact(posts, visits));
+                        res.send(guestbook(posts, visits));
                     }
                 });
             }
         });
     });
 
+    // Post to the guestbook
     app.post('/', (req, res) => {
         var thisPost = {
             'name': req.body['name'],
@@ -48,6 +50,7 @@ module.exports = ( app, db, models ) => {
             return alerts;
         };
 
+        // Check the user's input before inserting to the database
         var alerts = validatePost(thisPost);
 
         var collection = db.collection('messages');
@@ -59,12 +62,13 @@ module.exports = ( app, db, models ) => {
                 else {
                     console.log(`Inserted a message into the collection from ${req.body['email']}`);
                     models.howManyVisitorsHaveWeHad(false, (err, visits) => {
-                        res.send(contact(posts, visits, alerts));
+                        res.send(guestbook(posts, visits, alerts));
                     });
                 }
             });
         }
         else {
+            // This is horrible and I already hate callbacks so much
             collection.insertOne(thisPost, (err, result) => {
                 if(err != null){
                     console.error(err);
@@ -77,7 +81,7 @@ module.exports = ( app, db, models ) => {
                         else {
                             console.log(`Inserted a message into the collection from ${req.body['email']}`);
                             models.howManyVisitorsHaveWeHad(false, (err, visits) => {
-                                res.send(contact(posts, visits, alerts));
+                                res.send(guestbook(posts, visits, alerts));
                             });
                         }
                     });

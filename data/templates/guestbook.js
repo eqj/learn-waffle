@@ -10,12 +10,8 @@ const functionThatConvertsAMessageIntoHtml = (post) => {
 };
 
 const functionThatConvertsAlertIntoHtml = (alert) => {
-    return `
-    <script>
-    alert("${alert}");
-    </script>
-    `
-}
+    return `<script> alert("${alert}"); </script>`
+};
 
 module.exports = (posts, visits, alerts) => {
     if(alerts == null) {
@@ -28,7 +24,6 @@ module.exports = (posts, visits, alerts) => {
     <title>Leave a message</title>
     <link rel="stylesheet" type="text/css" href="public/style.css">
     ${ alerts.map(x => functionThatConvertsAlertIntoHtml(x)).join("") }
-        
 </head>
 <body>
     <div id="main">
