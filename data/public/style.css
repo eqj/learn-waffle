@@ -1,0 +1,323 @@
+body {
+  background-image: url(images/striped_bg.png);
+  font-family: Verdana;
+  color: #000;
+  margin: 0 0 0 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+/* Links */
+a:link { 
+  color: #fff; 
+  text-decoration: none; 
+}
+a:hover { 
+  text-decoration: 
+  underline overline; 
+  color: #e30000; 
+}
+a:visited { 
+  color: #fff; 
+}
+a:active { 
+  color: #fff; 
+}
+a.menu {
+  text-decoration: none;
+  padding: 0.5em;
+}
+a.menu:hover { 
+  background-color: #e30000; 
+  color: #fff; 
+}
+
+/* Headers */
+h1#title {
+  height: 0;
+  overflow: hidden;
+  padding-top: 100px;
+  background-image: url(images/nhct.png);
+  background-repeat: no-repeat;
+  background-position: top center;
+}
+h2 {
+  height: 0;
+  padding-top: 190px;
+  background-repeat: no-repeat;
+  background-position: center;
+    text-align: center;
+}
+h2#marian {
+  background-image: url(images/basilica-lourdes.png);
+}
+h2#cuba {
+  background-image: url(images/cuba.png);
+}
+h2#alaska {
+  background-image: url(images/alaska.png);
+}
+h2#rotterdam {
+  background-image: url(images/rotterdam.png);
+}
+h3 {
+  margin-left: 20px;
+  font-size: large;
+  font-weight: bolder;
+  margin-bottom: 0;
+}
+h4 {
+  font-size: large;
+  margin-bottom: 1em;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* Lists */
+ul#menu {
+  background-color: #2c2a78;
+  color: #fff;
+  font-weight: bold;
+  padding: 0.5em;
+  margin:0;
+}
+ul#menu li {
+  display: inline;
+  list-style-type: none;
+  text-transform: uppercase;
+}
+li#current {
+  padding: 0.5em;
+  background-color: #e30000;
+}
+ul.details {
+  font-family: Verdana;
+  font-size: smaller;
+  list-style-type: circle;
+}
+
+/* Sections */
+div#container {
+  background-image: url(images/bg.png);
+  background-repeat: repeat-y;
+  background-position: center;
+  width: 850px;
+  margin: 0 auto;
+  padding: 0.5em;
+  min-height: 100%;
+}
+div#header {
+  width: 800px;
+  margin: 0 auto;
+}
+div#content {
+  width: 800px;
+  height: auto;
+  margin: 0 auto;
+}
+div#footer {
+  background-color: #2c2a78;
+  text-align: center;
+  font-style: italic;
+  font-size: smaller;
+  color: #fff;
+  width: 800px;
+  margin: 0 auto;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+div#marian-info {
+  background-image: url(images/santiago.png);
+  background-repeat: no-repeat;
+  background-position: right center;
+  margin-right: 30px;
+}
+
+div#varadero-info {
+  float: left;
+}
+div#varadero-details {
+  float: right;
+  margin-right: 2em;
+}
+div#varadero-price {
+  clear: both;
+}
+
+div#rotterdam-passport {
+  text-align: center;
+  font-weight: bold;
+  font-size: small;
+  color: #000;
+  padding: 1em;
+}
+div#rotterdam-info {
+  float: left;
+  margin: 1em;
+}
+div#rotterdam-details {
+  float: right;
+  margin-right: 2em;
+}
+div#rotterdam-foot {
+  clear: both;
+  font-weight: bold;
+  text-align: center;
+  padding-bottom: 1em;
+}
+
+div#contact-form {
+  background-color: #edecf9;
+  width: 300px;
+  margin: 1em auto;
+  padding: 1em;
+  border: 1px #000 dotted;
+  font-weight: bold;
+  line-height: 1.5em;
+}
+div#contact-info {
+  width: 500px;
+  margin: 0 auto;
+  padding: 1em;
+}
+div#email-headers {
+  text-align: right;
+  margin-bottom: 1em;
+}
+div#emailed {
+  background-image: url(images/mail.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 0.5em;
+  width: 800px;
+  height: 150px;
+}
+
+/* Tables */
+caption {
+  padding: 0 0 5px 0;
+  font-style: italic;
+  font-size: small;
+  text-align: right;
+}
+table.itinerary {
+  width: 700px;
+  border: 1px #000 solid;
+  border-collapse: collapse;
+  padding: 0.5em;
+  font-size: smaller;
+  margin-left: auto; 
+  margin-right: auto;
+}
+table.rates {
+  border: 1px #000 solid;
+  border-collapse: collapse;
+  padding: 0.5em;
+  font-size: smaller;
+  width: 350px;
+}
+table.itinerary th, table.rates th {
+  background-color: #000;
+  border: 1px #000 solid;
+  color: #fff;
+  padding: 0.2em;
+  white-space: nowrap;
+}
+td.date {
+  background-color: #2c2a78;
+  border-bottom: 1px #edecf9 dotted;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  padding: 0.5em; 
+  width: 1em;
+}
+td.travel {
+  background-color: #edecf9;
+  border-bottom: 1px #2c2a78 dotted;
+  border-right: 1px #2c2a78 dotted;
+  font-weight: bold;
+  padding: 0.5em; 
+}
+td.activity {
+  background-color: #edecf9;
+  border-bottom: 1px #2c2a78 dotted;
+  border-right: 1px #2c2a78 dotted;
+  font-weight: bold;
+  padding: 0.5em; 
+}
+td.included {
+  background-color: #edecf9;
+  border-bottom: 1px #2c2a78 dotted;
+  font-weight: bold;
+  text-align: center;
+}
+td.arrive {
+  background-color: #edecf9;
+  border-bottom: 1px #2c2a78 dotted;
+  border-right: 1px #2c2a78 dotted;
+  font-weight: bold;
+  text-align: center;
+}
+td.depart {
+  background-color: #edecf9;
+  border-bottom: 1px #2c2a78 dotted;
+  font-weight: bold;
+  text-align: center; 
+}
+td.cabin, td.category, td.price {
+  background-color: #edecf9;
+  border-bottom: 1px #2c2a78 dotted;
+  border-right: 1px #2c2a78 dotted;
+  font-weight: bold;
+  padding: 0.5em; 
+  text-align: center; 
+  white-space: nowrap;
+  width: 1em;
+}
+
+/* Forms */
+input.fields {
+  width: 210px;
+  font-family: Verdana;
+  font-size: smaller;
+  font-weight: normal;
+  color: #2c2a78;
+}
+textarea {
+  width: 300px;
+  font-family: Verdana;
+  font-size: smaller;
+  color: #2c2a78;
+}
+input#buttonSend {
+  font-family: Verdana;
+  font-size: smaller;
+  font-weight: bold;
+  background-color: #2c2a78;
+  color: #fff;
+}
+
+/* Paragraphs */
+p.trip-description  {
+  margin-left: 30px;
+  font-style: italic;
+  font-weight: bold;
+}
+p {
+  font-size: small;
+}
+
+/* Other */
+span.price {
+  color: #e30000;
+  font-weight: bold;
+}
+span#phone {
+  color: #2c2a78;
+  font-weight: bold;
+}

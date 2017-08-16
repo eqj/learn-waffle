@@ -4,7 +4,29 @@ const thankyou = require('./templates/thankyou.js');
 module.exports = ( app, db ) => {
 
     app.get('/', (req, res) => {
-        res.send(contact());
+        var collection = db.collection('messages');
+        collection.find({}).limit(10).toArray((err, results) => {
+            if(err != null){
+                console.error(err);
+            }
+            else{
+                var counter = db.collection('visitcounter');
+                counter.insertOne({}, (err, result) => {
+                   if(err != null){
+                       console.error(err);
+                   }
+                   counter.count({}, (err, visits) => {
+                       if(err != null){
+                           console.error(err);
+                       }
+                       else{
+                           console.log(visits);
+                           res.send(contact(results, visits));
+                       }
+                   })
+                });
+            }
+        });
     });
 
     app.post('/', (req, res) => {
@@ -14,7 +36,8 @@ module.exports = ( app, db ) => {
         collection.insertOne(req.body, (err, result) => {
             if(err != null){
                 console.error(err);
-            } else {
+            }
+            else{
                 console.log("Inserted a message into the collection");
             }
         });
