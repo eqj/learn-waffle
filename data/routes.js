@@ -4,21 +4,13 @@ module.exports = ( app, db, models ) => {
 
     // Load the guestbook page
     app.get('/', (req, res) => {
-        models.heyAshWhatchaSayin((err, posts) => {
-            if(err != null){
+        Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(true)])
+            .then(([posts, visits]) => {
+                res.send(guestbook(posts, visits));
+            })
+            .catch((err) => {
                 console.error(err);
-            }
-            else{
-                models.howManyVisitorsHaveWeHad(true, (err, visits) => {
-                    if(err != null) {
-                        console.error(err);
-                    }
-                    else {
-                        res.send(guestbook(posts, visits));
-                    }
-                });
-            }
-        });
+            })
     });
 
     // Post to the guestbook
@@ -53,40 +45,28 @@ module.exports = ( app, db, models ) => {
         // Check the user's input before inserting to the database
         var alerts = validatePost(thisPost);
 
-        var collection = db.collection('messages');
         if(alerts.length > 0) {
-            models.heyAshWhatchaSayin((err, posts) => {
-                if(err != null) {
+            Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(false)])
+                .then(([posts, visits]) => {
+                    console.log('Message rejected');
+                    res.send(guestbook(posts, visits, alerts));
+                })
+                .catch((err) => {
                     console.error(err);
-                }
-                else {
-                    console.log(`Inserted a message into the collection from ${req.body['email']}`);
-                    models.howManyVisitorsHaveWeHad(false, (err, visits) => {
-                        res.send(guestbook(posts, visits, alerts));
-                    });
-                }
-            });
+                })
         }
         else {
-            // This is horrible and I already hate callbacks so much
-            collection.insertOne(thisPost, (err, result) => {
-                if(err != null){
+            models.shoveThisInYourPostHole(thisPost)
+                .then(() => {
+                    Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(false)])
+                        .then(([posts, visits]) => {
+                            console.log('Message stored');
+                            res.send(guestbook(posts, visits));
+                        })
+                })
+                .catch((err) => {
                     console.error(err);
-                }
-                else{
-                    models.heyAshWhatchaSayin((err, posts) => {
-                        if(err != null) {
-                            console.error(err);
-                        }
-                        else {
-                            console.log(`Inserted a message into the collection from ${req.body['email']}`);
-                            models.howManyVisitorsHaveWeHad(false, (err, visits) => {
-                                res.send(guestbook(posts, visits, alerts));
-                            });
-                        }
-                    });
-                }
-            });
+                })
         }
     });
 };

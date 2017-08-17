@@ -1,29 +1,33 @@
 
+// Mongo functions return promises already! How convenient!!
+
 module.exports = (db) => {
-    const howManyVisitorsHaveWeHad = (increment, callback) => {
+    const howManyVisitorsHaveWeHad = (increment) => {
         var counter = db.collection('visitcounter');
         if (increment) {
-            counter.insertOne({}, (err, result) => {
-                if (err != null) {
-                    callback(err, null);
-                }
-                else {
-                    counter.count({}, callback);
-                }
-            });
+            return counter.insertOne({})
+                .then(() => {
+                    return counter.count({});
+                })
         }
         else {
-            counter.count({}, callback);
+            return counter.count({});
         }
     };
 
-    const heyAshWhatchaSayin = (callback) => {
+    const heyAshWhatchaSayin = () => {
         var collection = db.collection('messages');
-        collection.find({}).limit(10).sort(['createdAt', -1]).toArray(callback);
+        return collection.find({}).limit(10).sort(['createdAt', -1]).toArray();
+    };
+
+    const shoveThisInYourPostHole = (post) => {
+        var collection = db.collection('messages');
+        return collection.insertOne(post);
     };
 
     return {
         howManyVisitorsHaveWeHad: howManyVisitorsHaveWeHad,
         heyAshWhatchaSayin: heyAshWhatchaSayin,
+        shoveThisInYourPostHole: shoveThisInYourPostHole,
     };
 };
