@@ -21,8 +21,9 @@ module.exports = (posts, visits, alerts) => {
     return `<!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Leave a message</title>
+        <title>Learn dem boops</title>
         <link rel="stylesheet" type="text/css" href="public/gueststyle.css">
+        <link rel="icon" type="image/png" href="public/favicon.ico" />
         ${ alerts.map(x => functionThatConvertsAlertIntoHtml(x)).join("") }
     </head>
     <body>
