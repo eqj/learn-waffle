@@ -1,12 +1,12 @@
 const guestbook = require('./templates/guestbook.js');
 
-module.exports = ( app, models ) => {
+module.exports = ( {app, models} ) => {
 
     // Load the guestbook page
     app.get('/', (req, res) => {
         return Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(true)])
             .then(([posts, visits]) => {
-                res.send(guestbook(posts, visits));
+                res.send(guestbook({posts: posts, visits: visits}));
             })
             .catch((err) => {
                 console.error(err);
@@ -59,7 +59,7 @@ module.exports = ( app, models ) => {
                 return Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(false)])
                     .then(([posts, visits]) => {
                         console.log('Message stored');
-                        res.send(guestbook(posts, visits,alerts));
+                        res.send(guestbook({posts: posts, visits: visits,alerts: alerts}));
                     })
             })
             .catch((err) => {

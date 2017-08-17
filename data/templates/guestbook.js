@@ -13,7 +13,7 @@ const functionThatConvertsAlertIntoHtml = (alert) => {
     return `<script> alert("${alert}"); </script>`
 };
 
-module.exports = (posts, visits, alerts) => {
+module.exports = ({posts, visits, alerts}) => {
     if(alerts == null) {
         alerts = [];
     }
