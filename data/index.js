@@ -17,7 +17,7 @@ mongoClient.connect(url, function(err, db) {
     } else {
         console.log("We connected to the mongo server!");
     }
-    routes(app, db, models(db));
+    routes(app, models(db));
 });
 
 app.use('/public', express.static(path.join(__dirname, 'public')));

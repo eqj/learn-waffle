@@ -1,10 +1,10 @@
 const guestbook = require('./templates/guestbook.js');
 
-module.exports = ( app, db, models ) => {
+module.exports = ( app, models ) => {
 
     // Load the guestbook page
     app.get('/', (req, res) => {
-        Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(true)])
+        return Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(true)])
             .then(([posts, visits]) => {
                 res.send(guestbook(posts, visits));
             })
@@ -45,28 +45,25 @@ module.exports = ( app, db, models ) => {
         // Check the user's input before inserting to the database
         var alerts = validatePost(thisPost);
 
-        if(alerts.length > 0) {
-            Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(false)])
-                .then(([posts, visits]) => {
-                    console.log('Message rejected');
-                    res.send(guestbook(posts, visits, alerts));
-                })
-                .catch((err) => {
-                    console.error(err);
-                })
-        }
-        else {
-            models.shoveThisInYourPostHole(thisPost)
-                .then(() => {
-                    Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(false)])
-                        .then(([posts, visits]) => {
-                            console.log('Message stored');
-                            res.send(guestbook(posts, visits));
-                        })
-                })
-                .catch((err) => {
-                    console.error(err);
-                })
-        }
+        const toAlertOrNotToAlert = () => {
+            if (alerts.length > 0) {
+                return Promise.resolve();
+            }
+            else {
+                return models.shoveThisInYourPostHole(thisPost);
+            }
+        };
+
+        return toAlertOrNotToAlert()
+            .then(() => {
+                return Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(false)])
+                    .then(([posts, visits]) => {
+                        console.log('Message stored');
+                        res.send(guestbook(posts, visits,alerts));
+                    })
+            })
+            .catch((err) => {
+                console.error(err);
+            })
     });
 };
