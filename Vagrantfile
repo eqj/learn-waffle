@@ -84,5 +84,28 @@ Vagrant.configure("2") do |config|
     service mongod restart
 
     echo "sudo service mongod start" >> /home/ubuntu/.bashrc
+
+    apt-get -y install build-essential tcl
+
+    cd /tmp
+    curl -O http://download.redis.io/redis-stable.tar.gz
+    tar xzf redis-stable.tar.gz
+    cd redis-stable
+    make -s
+    make test
+    make install
+
+    mkdir /etc/redis
+    cp /home/ubuntu/data/redis.conf /etc/redis/redis.conf
+    cp /home/ubuntu/data/redis.service /etc/systemd/system/redis.service
+
+    adduser --system --group --no-create-home redis
+    mkdir /var/lib/redis
+    chown redis:redis /var/lib/redis
+    chmod 770 /var/lib/redis
+
+    systemctl enable redis
+    systemctl start redis
+
   SHELL
 end
