@@ -3,8 +3,13 @@ const path = require('path');
 const bodyParse = require('body-parser');
 const app = express();
 const mongoClient = require('mongodb').MongoClient;
+const redis = require('redis');
 const routes = require('./routes.js');
 const models = require('./models.js');
+
+// Connect to redis
+let client = redis.createClient();
+//let client = redis.createClient(port, host);
 
 // Connection URL, very hard coded, much bad
 var url = 'mongodb://boop:LearnBoops@localhost:27017/learnboops?authSource=admin';
@@ -17,7 +22,7 @@ mongoClient.connect(url, function(err, db) {
     } else {
         console.log("We connected to the mongo server!");
     }
-    routes({app: app, models: models(db)});
+    routes({app: app, models: models(db), client: client});
 });
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
