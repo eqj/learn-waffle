@@ -87,13 +87,14 @@ Vagrant.configure("2") do |config|
 
     apt-get -y install build-essential tcl
 
-    cd /tmp
+    pushd /tmp
     curl -O http://download.redis.io/redis-stable.tar.gz
     tar xzf redis-stable.tar.gz
     cd redis-stable
     make -s
     make test
     make install
+    popd
 
     mkdir /etc/redis
     cp /home/ubuntu/data/redis.conf /etc/redis/redis.conf
@@ -106,6 +107,14 @@ Vagrant.configure("2") do |config|
 
     systemctl enable redis
     systemctl start redis
+
+    pushd /home/ubuntu/data
+    npm install body-parser --no-bin-links
+    npm install escape-html --no-bin-links
+    npm install express --no-bin-links
+    npm install mongodb --no-bin-links
+    npm install redis --no-bin-links
+    popd
 
   SHELL
 end
