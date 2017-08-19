@@ -5,24 +5,20 @@ module.exports = ( {app, models, client} ) => {
     // Load the guestbook page
     app.get('/', (req, res) => {
         client.get('cachedPostsHtml', (err, page) => {
-            if(err != null) {
-               console.error(err);
+            if(err != null || page != null) {
+               res.send(page);
             }
             else {
-                if(page != null) {
-                   res.send(page);
-                }
-                else {
-                    return Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(true)])
-                        .then(([posts, visits]) => {
-                            let page = guestbook({posts: posts, visits: visits});
-                            client.set('cachedPostsHtml', page);
-                            res.send(page);
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                        });
-                }
+                return Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(true)])
+                    .then(([posts, visits]) => {
+                        let page = guestbook({posts: posts, visits: visits});
+                        client.set('cachedPostsHtml', page);
+                        client.expire('cachedPostHtml', 300);
+                        res.send(page);
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
             }
         });
     });
@@ -73,7 +69,9 @@ module.exports = ( {app, models, client} ) => {
                 return Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(false)])
                     .then(([posts, visits]) => {
                         console.log('Message stored');
-                        res.send(guestbook({posts: posts, visits: visits,alerts: alerts}));
+                        client.del('cachedPostsHtml', (err, reply) => {
+                            res.send(guestbook({posts: posts, visits: visits,alerts: alerts}));
+                        });
                     })
             })
             .catch((err) => {
