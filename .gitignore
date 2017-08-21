@@ -3,3 +3,5 @@ node_modules
 .vagrant
 
 *.log
+
+data/package-lock\.json
