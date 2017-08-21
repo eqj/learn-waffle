@@ -89,11 +89,11 @@ Vagrant.configure("2") do |config|
 
     pushd /tmp
     curl -O http://download.redis.io/redis-stable.tar.gz
-    tar xzf redis-stable.tar.gz
+    tar xzsf redis-stable.tar.gz
     cd redis-stable
     make -s
-    make test
-    make install
+    make -s test
+    make -s install
     popd
 
     mkdir /etc/redis
