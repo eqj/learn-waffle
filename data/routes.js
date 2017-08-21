@@ -5,14 +5,16 @@ module.exports = ( {app, models, client} ) => {
 
     // Load the guestbook page
     app.get('/', (req, res) => {
-        return util.promisify(client.get('cachedPostsHtml'))
+        return util.promisify(client.get).bind(client)('cachedPostsHtml')
             .then((page) => {
                 if(page != null) {
+                    console.log("Got a cached page!");
                     res.send(page);
                 }
                 else {
                     return Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(true)])
                         .then(([posts, visits]) => {
+                            console.log("No cache found, loading page from scratch");
                             let page = guestbook({posts: posts, visits: visits});
                             client.set('cachedPostsHtml', page, 'EX', 300);
                             res.send(page);
@@ -67,9 +69,10 @@ module.exports = ( {app, models, client} ) => {
 
         return toAlertOrNotToAlert()
             .then(() => {
-                return Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(false), util.promisify(client.del('cachedPostsHtml'))])
+                return Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(false), util.promisify(client.del).bind(client)('cachedPostsHtml')])
                     .then(([posts, visits]) => {
-                        console.log('Message stored');
+                        console.log('Message stored in database');
+                        console.log('page cleared from cache');
                         res.send(guestbook({posts: posts, visits: visits,alerts: alerts}));
                     })
             })
