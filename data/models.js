@@ -1,7 +1,8 @@
+const uuid = require('uuid/v4');
 
 // Mongo functions return promises already! How convenient!!
 
-module.exports = (db) => {
+module.exports = (db, client) => {
     const howManyVisitorsHaveWeHad = (increment) => {
         var counter = db.collection('visitcounter');
         if (increment) {
@@ -25,9 +26,28 @@ module.exports = (db) => {
         return collection.insertOne(post);
     };
 
+    const registerUser = (post) => {
+        var collection = db.collection('users');
+        return collection.insertOne(post);
+    };
+
+    const getUser = (username) => {
+        var collection = db.collection('users');
+        return collection.findOne({_id:username});
+    };
+
+    const generateAuthToken = (username) => {
+        let token = uuid();
+        client.set(`auth_${token}`, username, 'EX', 86400);
+        return Promise.resolve(token);
+    };
+
     return {
         howManyVisitorsHaveWeHad: howManyVisitorsHaveWeHad,
         heyAshWhatchaSayin: heyAshWhatchaSayin,
         shoveThisInYourPostHole: shoveThisInYourPostHole,
+        registerUser: registerUser,
+        getUser: getUser,
+        generateAuthToken: generateAuthToken
     };
 };

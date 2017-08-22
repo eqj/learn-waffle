@@ -24,7 +24,7 @@
 
 body {
     font-family: 'main';
-    background-image: url(images/kitchenfloor.gif);
+    background-image: url(images/striped_bg.png);
     color: #000;
     margin: 0 0 0 0;
 }
@@ -44,6 +44,14 @@ h2 {
     height: 0;
     margin-bottom: 2em;
     text-align: center;
+}
+h3 {
+    font-size: smaller;
+    text-align: left;
+    color: red;
+    font-style: italic;
+    margin-top: 0em;
+    margin-bottom: 0em;
 }
 
 /* Images */
@@ -78,9 +86,13 @@ div#bar {
     padding-top: 0.1em;
     padding-bottom: 0.1em;
 }
+div#errors {
+    background-color: #000;
+    text-align: left;
+}
 
 /* Forms */
-form#contact_form {
+form {
     font-family: 'title';
     background-color: #edecf9;
     width: 300px;
@@ -113,7 +125,7 @@ input#submit_button {
 }
 
 /* Paragraphs */
-p {
+p#messages {
     font-size: small;
     margin-left: inherit;
 }
