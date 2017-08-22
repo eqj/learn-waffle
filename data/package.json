@@ -12,12 +12,14 @@
   "dependencies": {
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
+    "cookie-parser": "^1.4.3",
     "escape-html": "^1.0.3",
     "express": "^4.15.4",
     "mongodb": "^2.2.31",
     "node-gyp": "^3.6.2",
     "node-pre-gyp": "^0.6.36",
     "redis": "^2.8.0",
+    "uuid": "^3.1.0",
     "validator": "^8.1.0"
   }
 }
