@@ -60,60 +60,71 @@ Vagrant.configure("2") do |config|
   #
   # View the documentation for the provider you are using for more
   # information on available options.
+  config.vm.provider :virtualbox do |vm|
+    vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant", "1"]
+  end
 
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
+    echo "---Install various sofware useful utilities and build deps---"
+    apt-get install -y python-pip python-dev python-setuptools
+    apt-get install -y ack-grep vim dos2unix git curl build-essential gcc git tcl > /dev/null 2>&1
+    apt-get install -y make g++ libssl-dev
+    apt-get install -y libkrb5-dev
+    
+    echo "---Install node---"
     curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh
     bash nodesource_setup.sh
+    apt-get update
+    apt-get -y install nodejs
 
+    echo "---Install mongo---"
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
     echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
-    
     apt-get update
-
-    apt-get -y install nodejs
-    apt-get -y install build-essential
-    
     apt-get -y install mongodb-org
     service mongod start
     sleep 2
     mongo admin --eval 'db.createUser({user: "boop", pwd: "LearnBoops", roles: [ {role: "userAdminAnyDatabase", db: "admin" }, { role: "readWrite", db: "learnboops" }]});'
     cp /home/ubuntu/data/mongod.conf /etc/mongod.conf
     service mongod restart
-
     echo "sudo service mongod start" >> /home/ubuntu/.bashrc
 
-    apt-get -y install build-essential tcl
-
+    echo "---Install redis---"
     pushd /tmp
-    curl -O http://download.redis.io/redis-stable.tar.gz
-    tar xzsf redis-stable.tar.gz
-    cd redis-stable
+    curl -s -O http://download.redis.io/redis-stable.tar.gz
+    tar xzf redis-stable.tar.gz
+    popd
+    pushd /tmp/redis-stable
     make -s
-    make -s test
     make -s install
     popd
-
     mkdir /etc/redis
     cp /home/ubuntu/data/redis.conf /etc/redis/redis.conf
     cp /home/ubuntu/data/redis.service /etc/systemd/system/redis.service
-
     adduser --system --group --no-create-home redis
     mkdir /var/lib/redis
     chown redis:redis /var/lib/redis
     chmod 770 /var/lib/redis
-
     systemctl enable redis
     systemctl start redis
 
+    echo "---Make bcrypt happy!!---"
+    pushd /root
+    npm install node-pre-gyp --global
+    popd
+
+    echo "---Install npm libraries---"
     pushd /home/ubuntu/data
     npm install body-parser --no-bin-links
     npm install escape-html --no-bin-links
     npm install express --no-bin-links
     npm install mongodb --no-bin-links
     npm install redis --no-bin-links
+    npm install validator --no-bin-links
+    npm install bcrypt --no-bin-links
     popd
 
   SHELL

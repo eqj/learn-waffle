@@ -8,11 +8,16 @@
   },
   "author": "",
   "license": "ISC",
+  "private": "true",
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
     "escape-html": "^1.0.3",
     "express": "^4.15.4",
     "mongodb": "^2.2.31",
-    "redis": "^2.8.0"
+    "node-gyp": "^3.6.2",
+    "node-pre-gyp": "^0.6.36",
+    "redis": "^2.8.0",
+    "validator": "^8.1.0"
   }
 }
