@@ -118,13 +118,7 @@ Vagrant.configure("2") do |config|
 
     echo "---Install npm libraries---"
     pushd /home/ubuntu/data
-    npm install body-parser --no-bin-links
-    npm install escape-html --no-bin-links
-    npm install express --no-bin-links
-    npm install mongodb --no-bin-links
-    npm install redis --no-bin-links
-    npm install validator --no-bin-links
-    npm install bcrypt --no-bin-links
+    npm install --no-bin-links
     popd
 
   SHELL
