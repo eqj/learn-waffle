@@ -1,19 +1,11 @@
 const uuid = require('uuid/v4');
+const util = require('util');
 
 // Mongo functions return promises already! How convenient!!
 
 module.exports = (db, client) => {
-    const howManyVisitorsHaveWeHad = (increment) => {
-        var counter = db.collection('visitcounter');
-        if (increment) {
-            return counter.insertOne({})
-                .then(() => {
-                    return counter.count({});
-                })
-        }
-        else {
-            return counter.count({});
-        }
+    const howManyVisitorsHaveWeHad = () => {
+        return util.promisify(client.incr).bind(client)('visitCounter')
     };
 
     const heyAshWhatchaSayin = () => {

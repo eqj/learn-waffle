@@ -96,7 +96,7 @@ module.exports = ( {app, models, kickedOutIfNotLoggedInMiddleware, notNullMiddle
     // Load the guestbook page
     /*************************/
     app.get('/', (req, res) => {
-        return Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad(true)])
+        return Promise.all([models.heyAshWhatchaSayin(), models.howManyVisitorsHaveWeHad()])
         .then(([posts, visits]) => {
             let username = '';
             let email = '';
