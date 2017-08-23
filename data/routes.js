@@ -2,20 +2,21 @@ const guestbookTemplate = require('./templates/guestbook.js');
 const loginTemplate = require('./templates/login.js');
 const registerTemplate = require('./templates/register.js');
 const individualPostsTemplate = require('./templates/individualPosts.js');
-const util = require('util');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 const saltrounds = 10;
 
-module.exports = ( {app, models, client, kickedOutIfNotLoggedInMiddleware, notNullMiddleware, emailValidationMiddleware} ) => {
+module.exports = ( {app, models, kickedOutIfNotLoggedInMiddleware, notNullMiddleware, emailValidationMiddleware} ) => {
 
-    // Display login page
+    /*************************/
+    // Display login
+    /*************************/
     app.get('/login', (req, res) => {
         res.send(loginTemplate({alerts: req.messages}));
     });
 
     /*************************/
-    // User logging in
+    // Log this user in
     /*************************/
     app.post('/login', notNullMiddleware(['username','password']), (req, res) => {
         let fields = {
@@ -25,6 +26,7 @@ module.exports = ( {app, models, client, kickedOutIfNotLoggedInMiddleware, notNu
 
         return models.getUser(fields.username)
             .then((thisUser) => {
+                // Compare to hashed password
                 return bcrypt.compare(fields.password, thisUser.password)
                     .then((match) => {
                         if (!match) {
@@ -45,7 +47,9 @@ module.exports = ( {app, models, client, kickedOutIfNotLoggedInMiddleware, notNu
             });
     });
 
-    // Display registration signup
+    /*************************/
+    // Display registration
+    /*************************/
     app.get('/register', (req, res) => {
         res.send(registerTemplate({alerts: req.messages}));
     });
@@ -60,6 +64,7 @@ module.exports = ( {app, models, client, kickedOutIfNotLoggedInMiddleware, notNu
             'password': req.body['password']
         };
 
+        // Encrypt dat password and store it
         return bcrypt.hash(fields.password, saltrounds)
             .then((hash) => {
                 fields.password = hash;
@@ -112,16 +117,21 @@ module.exports = ( {app, models, client, kickedOutIfNotLoggedInMiddleware, notNu
     // Post to the guestbook
     /*************************/
     app.post('/', notNullMiddleware(['name','email','message']), emailValidationMiddleware, (req, res) => {
-        let thisPost = {
+        let fields = {
             'name': req.body['name'],
             'email': req.body['email'],
             'message': req.body['message'],
             'createdAt': new Date()
         };
 
-        return Promise.all([models.shoveThisInYourPostHole(thisPost), util.promisify(client.del).bind(client)('cachedPostsHtml')])
+        // Note to self:
+        // Back when I cached the page to learn about redis, I converted the functions to promises like:
+        // util.promisify(client.<function>).bind(client)(<args>)
+        // For the future when I forget why I had to bind the client to it; they were instance level functions,
+        // and promisify created homeless copies that failed without context from the client object
+
+        return models.shoveThisInYourPostHole(fields)
             .then(() => {
-                console.log(thisPost);
                 console.log('Message stored in database');
                 res.redirect('/');
             })
@@ -132,7 +142,7 @@ module.exports = ( {app, models, client, kickedOutIfNotLoggedInMiddleware, notNu
     });
 
     /*************************/
-    // Load one user's posts
+    // Show one user's posts
     /*************************/
     app.get('/user/:username', kickedOutIfNotLoggedInMiddleware, (req, res) => {
 

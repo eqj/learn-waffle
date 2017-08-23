@@ -21,7 +21,7 @@ module.exports = ({posts, username}) => {
     <body>
         <div id="main">
             <div id="bar">
-                <h1>${username}'s Last 10 Posts!</h1>
+                <h1>${username}'s Posts!</h1>
             </div>
             <img id="header" src="public/images/kilroy.jpg">
             <div id="content">

@@ -44,7 +44,7 @@ module.exports = (db, client) => {
 
     const getWhatsInThePostHole = (username) => {
         var collection = db.collection('messages');
-        return collection.find({name:username}).limit(10).sort(['createdAt', -1]).toArray();
+        return collection.find({name:username}).limit(100).sort(['createdAt', -1]).toArray();
     };
 
     return {

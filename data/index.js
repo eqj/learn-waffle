@@ -11,14 +11,15 @@ const models = require('./models.js');
 const cookieParser = require('cookie-parser');
 
 // Connect to redis
-let client = redis.createClient();
-client.flushall();
 //let client = redis.createClient(port, host);
+let client = redis.createClient();
+// Flush the cache each time we boot up, to make testing less painful
+client.flushall();
 
-// Connection URL, very hard coded, much bad
+// Connection URL
 var url = 'mongodb://boop:LearnBoops@localhost:27017/learnboops?authSource=admin';
 
-// Middlewarez
+// Middleware
 const logAllCookiesMiddleware = (req, res, next) => {
     console.log(req.cookies);
     next();
@@ -95,7 +96,7 @@ const emailValidationMiddleware = (req, res, next) => {
     }
 };
 
-// Use some things
+// Use some things on ALL the pages
 app.use(cookieParser());
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use(bodyParse.json());
@@ -114,8 +115,10 @@ mongoClient.connect(url, function(err, db) {
         console.log("We connected to the mongo server!");
     }
     let barry = models(db, client);
+    // I want the auth middleware everywhere too, but it needs a database. Barry is a good, good name for a database.
     app.use(authMiddleware(barry));
-    routes({app: app, models: barry, client: client, kickedOutIfNotLoggedInMiddleware: kickedOutIfNotLoggedInMiddleware, notNullMiddleware: notNullMiddleware, emailValidationMiddleware: emailValidationMiddleware});
+    // Pass in the middleware that won't be used everywhere, so that it can be used where needed
+    routes({app: app, models: barry, kickedOutIfNotLoggedInMiddleware: kickedOutIfNotLoggedInMiddleware, notNullMiddleware: notNullMiddleware, emailValidationMiddleware: emailValidationMiddleware});
 });
 
 app.listen(8080, function () {
