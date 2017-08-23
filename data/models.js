@@ -42,12 +42,18 @@ module.exports = (db, client) => {
         return Promise.resolve(token);
     };
 
+    const getWhatsInThePostHole = (username) => {
+        var collection = db.collection('messages');
+        return collection.find({name:username}).limit(10).sort(['createdAt', -1]).toArray();
+    };
+
     return {
         howManyVisitorsHaveWeHad: howManyVisitorsHaveWeHad,
         heyAshWhatchaSayin: heyAshWhatchaSayin,
         shoveThisInYourPostHole: shoveThisInYourPostHole,
         registerUser: registerUser,
         getUser: getUser,
-        generateAuthToken: generateAuthToken
+        generateAuthToken: generateAuthToken,
+        getWhatsInThePostHole: getWhatsInThePostHole
     };
 };

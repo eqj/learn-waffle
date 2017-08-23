@@ -4,16 +4,12 @@ const functionThatConvertsAlertIntoHtml = (alert) => {
 };
 
 module.exports = ({alerts}) => {
-    if(alerts == null) {
-        alerts = [];
-    }
-
     return `<!DOCTYPE html>
 <html lang="en">
     <head>
         <title>Learn dem boops</title>
-        <link rel="stylesheet" type="text/css" href="public/style.css">
-        <link rel="icon" type="image/png" href="public/favicon.ico" />
+        <link rel="stylesheet" type="text/css" href="/public/style.css">
+        <link rel="icon" type="image/png" href="/public/favicon.ico" />
     </head>
     <body>
         <div id="main">

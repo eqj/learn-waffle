@@ -4,7 +4,7 @@ const functionThatConvertsAMessageIntoHtml = (post) => {
     return `
     <p class="messages">
     ${escape(post['message'])}<br>
-    -- <i>${escape(post['name'])}, ${escape(post['createdAt'].toDateString())}</i>
+    -- <i><a href="/user/${escape(post['name'])}">${escape(post['name'])}</a>, ${escape(post['createdAt'].toDateString())}</i>
     </p>
     `;
 };
@@ -14,16 +14,12 @@ const functionThatConvertsAlertIntoHtml = (alert) => {
 };
 
 module.exports = ({posts, visits, alerts, username, email}) => {
-    if(alerts == null || alerts === '') {
-        alerts = [];
-    }
-
     return `<!DOCTYPE html>
 <html lang="en">
     <head>
         <title>Learn dem boops</title>
-        <link rel="stylesheet" type="text/css" href="public/style.css">
-        <link rel="icon" type="image/png" href="public/favicon.ico" />
+        <link rel="stylesheet" type="text/css" href="/public/style.css">
+        <link rel="icon" type="image/png" href="/public/favicon.ico" />
     </head>
     <body>
         <div id="main">
