@@ -53,7 +53,7 @@ const sendEmail = ({recipient, subject, body}) => {
 
 // Middleware
 const logAllCookiesMiddleware = (req, res, next) => {
-    console.log(req.cookies);
+    console.log(`cookies: ${req.cookies}`);
     next();
 };
 const messagesMiddleware = (req, res, next) => {
