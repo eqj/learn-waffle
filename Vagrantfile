@@ -116,6 +116,8 @@ Vagrant.configure("2") do |config|
     npm install node-pre-gyp --global
     echo "---Jaaaake---"
     npm install jake --global
+    echo "---Mmmmmmocha---"
+    npm install mocha --global
     popd
 
     echo "---Install npm libraries---"

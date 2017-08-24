@@ -12,3 +12,10 @@ task('worker', {async: true}, function () {
         complete();
     });
 });
+
+task('test', {async: true}, function () {
+    jake.exec(['mocha'], {printStdout: true}, function () {
+        console.log('Makin\' the tests!');
+        complete();
+    });
+});
