@@ -9,6 +9,43 @@ const saltrounds = 10;
 module.exports = ( {app, models, kickedOutIfNotLoggedInMiddleware, notNullMiddleware, emailValidationMiddleware, sendEmail} ) => {
 
     /*************************/
+    // Return some data
+    /*************************/
+    app.get('/api', (req, res) => {
+        return models.heyAshWhatchaSayin()
+            .then((posts) => {
+                let serializePosts = JSON.stringify(posts);
+                res.header("Content-Type", "application/json");
+                res.send(serializePosts);
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(err);
+            });
+    });
+
+    /*************************/
+    // Post some data
+    /*************************/
+    app.post('/api', (req, res) => {
+        let fields = {
+            'name': req.body.name,
+            'email': req.body.email,
+            'message': req.body.message,
+            'createdAt': new Date()
+        };
+
+        return models.shoveThisInYourPostHole(fields)
+            .then(() => {
+                res.send('OK');
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(err);
+            });
+    });
+
+    /*************************/
     // Display login
     /*************************/
     app.get('/login', (req, res) => {
@@ -44,6 +81,7 @@ module.exports = ( {app, models, kickedOutIfNotLoggedInMiddleware, notNullMiddle
                 })
             .catch((err) => {
                 console.error(err);
+                res.status(500).send(err);
             });
     });
 
