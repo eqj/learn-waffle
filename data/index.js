@@ -7,8 +7,17 @@ const redis = require('redis');
 const util = require('util');
 const validator = require('validator');
 const routes = require('./routes.js');
+const jobs = require('./jobs.js');
 const models = require('./models.js');
 const cookieParser = require('cookie-parser');
+const kue = require('kue');
+
+// Check the environment variables for a WORKER
+var isWorker = process.env.WORKER === "true" || false;
+
+// Create a kue queue...QQ
+// let queue = kue.createQueue(port, host);
+let queue = kue.createQueue();
 
 // Connect to redis
 //let client = redis.createClient(port, host);
@@ -17,7 +26,30 @@ let client = redis.createClient();
 client.flushall();
 
 // Connection URL
-var url = 'mongodb://boop:LearnBoops@localhost:27017/learnboops?authSource=admin';
+let url = 'mongodb://boop:LearnBoops@localhost:27017/learnboops?authSource=admin';
+
+const createJob = ({name, data}) => {
+    return new Promise( (yay, boo) => {
+        queue.create(name, data)
+            .save( (err) => {
+                if(err) {
+                    boo(err);
+                }
+                else {
+                    yay();
+                }
+            });
+    });
+};
+
+// Queue up an email to send
+const sendEmail = ({recipient, subject, body}) => {
+    return createJob({name: 'email', data: {
+            recipient: recipient,
+            subject: subject,
+            body: body
+        }});
+};
 
 // Middleware
 const logAllCookiesMiddleware = (req, res, next) => {
@@ -117,10 +149,24 @@ mongoClient.connect(url, function(err, db) {
     let barry = models(db, client);
     // I want the auth middleware everywhere too, but it needs a database. Barry is a good, good name for a database.
     app.use(authMiddleware(barry));
-    // Pass in the middleware that won't be used everywhere, so that it can be used where needed
-    routes({app: app, models: barry, kickedOutIfNotLoggedInMiddleware: kickedOutIfNotLoggedInMiddleware, notNullMiddleware: notNullMiddleware, emailValidationMiddleware: emailValidationMiddleware});
+
+    if(isWorker) {
+        console.log("I AM A WORKER!");
+        jobs({queue: queue});
+    }
+    else {
+        // Pass in the middleware that won't be used everywhere, so that it can be used where needed
+        routes({app: app, models: barry, kickedOutIfNotLoggedInMiddleware: kickedOutIfNotLoggedInMiddleware, notNullMiddleware: notNullMiddleware, emailValidationMiddleware: emailValidationMiddleware, sendEmail: sendEmail});
+    }
 });
 
-app.listen(8080, function () {
-    console.log('Example app listening on port 8080!');
-});
+if(isWorker) {
+    app.listen(8081, function () {
+        console.log('Example worker listening on port 8081!');
+    });
+}
+else {
+    app.listen(8080, function () {
+        console.log('Example app listening on port 8080!');
+    });
+}

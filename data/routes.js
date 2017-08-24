@@ -6,7 +6,7 @@ const validator = require('validator');
 const bcrypt = require('bcrypt');
 const saltrounds = 10;
 
-module.exports = ( {app, models, kickedOutIfNotLoggedInMiddleware, notNullMiddleware, emailValidationMiddleware} ) => {
+module.exports = ( {app, models, kickedOutIfNotLoggedInMiddleware, notNullMiddleware, emailValidationMiddleware, sendEmail} ) => {
 
     /*************************/
     // Display login
@@ -71,6 +71,7 @@ module.exports = ( {app, models, kickedOutIfNotLoggedInMiddleware, notNullMiddle
                 return Promise.all([models.registerUser(fields)])
                     .then(() => {
                         console.log('New user stored in database');
+                        sendEmail({recipient: fields.email, subject: 'Welcome to LearnBoops', body: 'hurpadurp'});
                     })
                     .then(() => {
                         return models.generateAuthToken(fields._id)
