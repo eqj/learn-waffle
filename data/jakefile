@@ -1,0 +1,14 @@
+desc('This is the default task.');
+task('default', {async: true}, function () {
+    jake.exec(['node index.js'], {printStdout: true}, () => {
+        console.log('Bye bye');
+        complete();
+    });
+});
+
+task('worker', {async: true}, function () {
+    jake.exec(['WORKER=true node index.js'], {printStdout: true}, function () {
+        console.log('Toot toot');
+        complete();
+    });
+});

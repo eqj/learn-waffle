@@ -111,9 +111,11 @@ Vagrant.configure("2") do |config|
     systemctl enable redis
     systemctl start redis
 
-    echo "---Make bcrypt happy!!---"
     pushd /root
+    echo "---Make bcrypt happy!!---"
     npm install node-pre-gyp --global
+    echo "---Jaaaake---"
+    npm install jake --global
     popd
 
     echo "---Install npm libraries---"
