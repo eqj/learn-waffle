@@ -63,22 +63,28 @@ module.exports = ( {app, models, kickedOutIfNotLoggedInMiddleware, notNullMiddle
 
         return models.getUser(fields.username)
             .then((thisUser) => {
-                // Compare to hashed password
-                return bcrypt.compare(fields.password, thisUser.password)
-                    .then((match) => {
-                        if (!match) {
-                            res.cookie('messages', 'Login failed');
-                            res.redirect('/login');
-                        }
-                    })
-                    .then(() => {
-                        return models.generateAuthToken(fields.username)
-                            .then((token) => {
-                                res.cookie('auth', token);
-                                res.redirect('/');
-                            })
-                    })
-                })
+                if(thisUser != null) {
+                    // Compare to hashed password
+                    return bcrypt.compare(fields.password, thisUser.password)
+                        .then((match) => {
+                            if (!match) {
+                                res.cookie('messages', 'Login failed');
+                                res.redirect('/login');
+                            }
+                        })
+                        .then(() => {
+                            return models.generateAuthToken(fields.username)
+                                .then((token) => {
+                                    res.cookie('auth', token);
+                                    res.redirect('/');
+                                })
+                        })
+                }
+                else{
+                    res.cookie('messages', 'User not on file');
+                    res.redirect('/login');
+                }
+            })
             .catch((err) => {
                 console.error(err);
                 res.status(500).send(err);
